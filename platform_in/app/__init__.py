@@ -57,59 +57,6 @@ def create_app(script_info=None):
     def trigger_error():
         division_by_zero = 1 / 0
 
-    @app.route("/c2/v1/<id>", methods=["POST"])
-    def post_measurement_data(id):
-
-        try:
-            # data = request.get_data()
-            data = request.get_data()
-            logging.info(f"post data goes like : {data[0:200]}")
-            logging.debug(f"post data in json : {json.loads(data)}")
-
-            # Asynchronously produce a message, the delivery report callback
-            # will be triggered from poll() above, or flush() below, when the message has
-            # been successfully delivered or failed permanently.
-
-            received_data = json.loads(data)
-
-            key = "fixme"
-            if "data" in received_data.keys():
-                # received measurement type data
-
-                bad_json = received_data["data"]
-                timestamps = bad_json.keys()
-                timestamp_value_pairs = []
-                for item in timestamps:
-                    if bad_json[item] != "0":
-                        timestamp_value_pairs.append(
-                            {"timestamp": item, "value": bad_json[item]}
-                        )
-
-                received_data["data"] = timestamp_value_pairs
-                logging.info(received_data)
-                producer.send(
-                    topic="finest.json.c2lights.measurements",
-                    key=id,
-                    value=received_data,
-                )
-
-            elif "ref" in received_data.keys():
-                # received alarm or event type data
-
-                producer.send(
-                    topic="finest.json.c2lights.events",
-                    key=id,
-                    value=request.get_json(),
-                )
-
-            return success_response_object, success_code
-
-        except Exception as e:
-            producer.flush()
-            logging.error("post data error", exc_info=True)
-            # elastic_apm.capture_exception()
-            return failure_response_object, failure_code
-
     @app.route("/c2/v1", methods=["POST"])
     def postdata():
 
@@ -119,21 +66,11 @@ def create_app(script_info=None):
             logging.info(f"post data goes like : {data[0:200]}")
             logging.debug(f"post data in json : {json.loads(data)}")
 
-            # Asynchronously produce a message, the delivery report callback
-            # will be triggered from poll() above, or flush() below, when the message has
-            # been successfully delivered or failed permanently.
-
             received_data = json.loads(data)
 
-            if "data" in received_data.keys():
-                # received measurement type data
-                key = received_data["n"]
-            elif "ref" in received_data.keys():
-                # received alarm or event type data
-                key = received_data["n"]
 
             producer.send(
-                topic="test.sputhan",
+                topic="test.api.creation",
                 key="",
                 value=request.get_json(),
             )
