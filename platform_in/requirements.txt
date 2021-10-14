@@ -1,0 +1,16 @@
+
+wheel
+kafka-python
+requests
+elastic-apm
+Flask
+Flask-RESTful
+Flask-Security
+gunicorn
+Jinja2
+pytest
+requests
+certifi
+pyrsistent
+pydantic
+sentry-sdk[flask]
