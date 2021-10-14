@@ -57,7 +57,7 @@ def create_app(script_info=None):
     def trigger_error():
         division_by_zero = 1 / 0
 
-    @app.route("/c2/v1", methods=["POST"])
+    @app.route("/test/v1", methods=["POST"])
     def postdata():
 
         try:
